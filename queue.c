@@ -23,17 +23,56 @@ struct list_head *q_new()
 }
 
 /* Free all storage used by queue */
-void q_free(struct list_head *l) {}
+void q_free(struct list_head *l)
+{
+    struct list_head *list_iter, *_safe;
+
+    list_for_each_safe (list_iter, _safe, l) {
+        element_t *entry = list_entry(list_iter, element_t, list);
+        list_del(list_iter);
+        free(entry->value);
+        free(entry);
+    }
+    free(l);
+}
 
 /* Insert an element at head of queue */
 bool q_insert_head(struct list_head *head, char *s)
 {
+    element_t *new_node = malloc(sizeof(element_t));
+    if (!new_node)
+        return false;
+
+    // 複製字串
+    new_node->value = malloc(strlen(s) + 1);  // +1為'\0'
+    if (new_node->value == NULL) {
+        free(new_node);
+        return false;
+    }
+    strncpy(new_node->value, s, strlen(s) + 1);
+
+    list_add(&new_node->list, head);
+
     return true;
 }
 
 /* Insert an element at tail of queue */
 bool q_insert_tail(struct list_head *head, char *s)
 {
+    element_t *new_node = malloc(sizeof(element_t));
+    if (!new_node)
+        return false;
+
+    // 複製字串
+    new_node->value = malloc(strlen(s) + 1);  // +1為'\0'
+    if (new_node->value == NULL) {
+        free(new_node);
+        return false;
+    }
+    strncpy(new_node->value, s, strlen(s) + 1);
+
+    list_add_tail(&new_node->list, head);
+
     return true;
 }
 
