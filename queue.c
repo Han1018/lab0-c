@@ -187,6 +187,23 @@ void swap(element_t *a, element_t *b)
 void q_swap(struct list_head *head)
 {
     // https://leetcode.com/problems/swap-nodes-in-pairs/
+    if (head == NULL || list_is_singular(head))
+        return;
+
+    struct list_head *li, *tmp;
+
+    list_for_each_safe (li, tmp, head) {
+        if (li == head->prev)
+            return;
+
+        element_t *node = list_entry(li, element_t, list);
+        element_t *next_node = list_entry(tmp, element_t, list);
+
+        // swap node and next node string
+        char *tmp_string = node->value;
+        node->value = next_node->value;
+        next_node->value = tmp_string;
+    }
 }
 
 /* Reverse elements in queue */
