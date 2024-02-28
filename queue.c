@@ -235,7 +235,7 @@ void q_sort(struct list_head *head, bool descend)
     element_t *pivot;
     element_t *item = NULL, *tmp = NULL;
 
-    if (list_empty(head) || list_is_singular(head))
+    if (head == NULL || list_empty(head) || list_is_singular(head))
         return;
 
     INIT_LIST_HEAD(&list_less);
