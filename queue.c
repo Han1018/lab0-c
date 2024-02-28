@@ -251,7 +251,7 @@ void q_sort(struct list_head *head, bool descend)
             else
                 list_move_tail(&item->list, &list_greater);
         } else {
-            if (strcmp(item->value, pivot->value) < 0)
+            if (strcmp(item->value, pivot->value) > 0)
                 list_move_tail(&item->list, &list_less);
             else
                 list_move_tail(&item->list, &list_greater);
@@ -270,7 +270,6 @@ void q_sort(struct list_head *head, bool descend)
  * the right side of it */
 int q_ascend(struct list_head *head)
 {
-    // https://leetcode.com/problems/remove-nodes-from-linked-list/
     return 0;
 }
 
@@ -279,6 +278,26 @@ int q_ascend(struct list_head *head)
 int q_descend(struct list_head *head)
 {
     // https://leetcode.com/problems/remove-nodes-from-linked-list/
+    struct list_head *last_biggest, *tmp, *li;
+    if (list_empty(head) || list_is_singular(head))
+        return 0;
+
+    element_t *last_biggest_entry = list_entry(head->next, element_t, list);
+    last_biggest = head->next;
+
+    list_for_each_safe (li, tmp, head) {
+        element_t *entry = list_entry(tmp, element_t, list);
+        if (li == head->prev) {
+            return 0;
+        }
+        if (strcmp(entry->value, last_biggest_entry->value) < 0) {
+            while (last_biggest != tmp) {
+                struct list_head *next = last_biggest->next;
+                list_del(last_biggest);
+                last_biggest = next;
+            }
+        }
+    }
     return 0;
 }
 
