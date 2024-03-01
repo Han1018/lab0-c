@@ -275,39 +275,14 @@ int q_ascend(struct list_head *head)
 {
     // https://leetcode.com/problems/remove-nodes-from-linked-list/
     struct list_head *last_biggest, *tmp, *li;
-    if (list_empty(head) || list_is_singular(head))
+    if (!head || list_empty(head))
         return 0;
+    if (list_is_singular(head))
+        return 1;
 
     element_t *last_biggest_entry = list_entry(head->next, element_t, list);
     last_biggest = head->next;
-
-    list_for_each_safe (li, tmp, head) {
-        element_t *entry = list_entry(tmp, element_t, list);
-        if (li == head->prev) {
-            return 0;
-        }
-        if (strcmp(entry->value, last_biggest_entry->value) > 0) {
-            while (last_biggest != tmp) {
-                struct list_head *next = last_biggest->next;
-                list_del(last_biggest);
-                last_biggest = next;
-            }
-        }
-    }
-    return 0;
-}
-
-/* Remove every node which has a node with a strictly greater value anywhere
- * to the right side of it */
-int q_descend(struct list_head *head)
-{
-    // https://leetcode.com/problems/remove-nodes-from-linked-list/
-    struct list_head *last_biggest, *tmp, *li;
-    if (list_empty(head) || list_is_singular(head))
-        return 0;
-
-    element_t *last_biggest_entry = list_entry(head->next, element_t, list);
-    last_biggest = head->next;
+    int size = 1;
 
     list_for_each_safe (li, tmp, head) {
         element_t *entry = list_entry(tmp, element_t, list);
@@ -317,12 +292,57 @@ int q_descend(struct list_head *head)
         if (strcmp(entry->value, last_biggest_entry->value) < 0) {
             while (last_biggest != tmp) {
                 struct list_head *next = last_biggest->next;
+                last_biggest_entry = list_entry(last_biggest, element_t, list);
+
                 list_del(last_biggest);
+                free(last_biggest_entry->value);
+                free(last_biggest_entry);
+
                 last_biggest = next;
             }
+            size++;
+            last_biggest_entry = list_entry(last_biggest, element_t, list);
         }
     }
-    return 0;
+    return size;
+}
+
+/* Remove every node which has a node with a strictly greater value anywhere
+ * to the right side of it */
+int q_descend(struct list_head *head)
+{
+    // https://leetcode.com/problems/remove-nodes-from-linked-list/
+    struct list_head *last_biggest, *tmp, *li;
+    if (!head || list_empty(head))
+        return 0;
+    if (list_is_singular(head))
+        return 1;
+
+    element_t *last_biggest_entry = list_entry(head->next, element_t, list);
+    last_biggest = head->next;
+    int size = 1;
+
+    list_for_each_safe (li, tmp, head) {
+        element_t *entry = list_entry(tmp, element_t, list);
+        if (li == head->prev) {
+            return 0;
+        }
+        if (strcmp(entry->value, last_biggest_entry->value) > 0) {
+            while (last_biggest != tmp) {
+                struct list_head *next = last_biggest->next;
+                last_biggest_entry = list_entry(last_biggest, element_t, list);
+
+                list_del(last_biggest);
+                free(last_biggest_entry->value);
+                free(last_biggest_entry);
+
+                last_biggest = next;
+            }
+            size++;
+            last_biggest_entry = list_entry(last_biggest, element_t, list);
+        }
+    }
+    return size;
 }
 
 /* Merge all the queues into one sorted queue, which is in
