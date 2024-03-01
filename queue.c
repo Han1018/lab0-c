@@ -167,12 +167,13 @@ bool q_delete_dup(struct list_head *head)
 
         // Check if the current and next entries have the same value
         if (strcmp(entry->value, next_entry->value) == 0) {
-            struct list_head *next_tmp = tmp->next;  // 保存对下一个节点的引用
+            struct list_head *next_tmp =
+                tmp->next;  // Save the next node to tmp
             // Remove the duplicate node
             list_del(tmp);
             free(next_entry->value);
             free(next_entry);
-            tmp = next_tmp;  // 移动到下一个节点
+            tmp = next_tmp;
         }
     }
 
