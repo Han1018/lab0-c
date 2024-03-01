@@ -164,7 +164,6 @@ bool q_delete_dup(struct list_head *head)
             return true;
         element_t *entry = list_entry(li, element_t, list);
         element_t *next_entry = list_entry(tmp, element_t, list);
-
         // Check if the current and next entries have the same value
         if (strcmp(entry->value, next_entry->value) == 0) {
             struct list_head *next_tmp =
@@ -184,22 +183,14 @@ bool q_delete_dup(struct list_head *head)
 void q_swap(struct list_head *head)
 {
     // https://leetcode.com/problems/swap-nodes-in-pairs/
-    if (head == NULL || list_is_singular(head))
+    if (!head || list_is_singular(head) || list_empty(head))
         return;
 
     struct list_head *li, *tmp;
 
-    list_for_each_safe (li, tmp, head) {
-        if (li == head->prev)
-            return;
-
-        element_t *node = list_entry(li, element_t, list);
-        element_t *next_node = list_entry(tmp, element_t, list);
-
-        // swap node and next node string
-        char *tmp_string = node->value;
-        node->value = next_node->value;
-        next_node->value = tmp_string;
+    for (li = head->next, tmp = li->next; li != head && tmp != head;
+         li = li->next, tmp = li->next) {
+        list_move(li, tmp);
     }
 }
 
