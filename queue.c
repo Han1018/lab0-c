@@ -160,15 +160,19 @@ bool q_delete_dup(struct list_head *head)
     struct list_head *li, *tmp;
 
     list_for_each_safe (li, tmp, head->next) {
+        if (tmp == head)
+            return true;
         element_t *entry = list_entry(li, element_t, list);
         element_t *next_entry = list_entry(tmp, element_t, list);
 
         // Check if the current and next entries have the same value
         if (strcmp(entry->value, next_entry->value) == 0) {
+            struct list_head *next_tmp = tmp->next;  // 保存对下一个节点的引用
             // Remove the duplicate node
             list_del(tmp);
             free(next_entry->value);
             free(next_entry);
+            tmp = next_tmp;  // 移动到下一个节点
         }
     }
 
