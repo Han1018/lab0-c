@@ -175,14 +175,6 @@ bool q_delete_dup(struct list_head *head)
     return true;
 }
 
-/* Swap two nodes*/
-void swap(element_t *a, element_t *b)
-{
-    element_t t = *a;
-    *a = *b;
-    *b = t;
-}
-
 /* Swap every two adjacent nodes */
 void q_swap(struct list_head *head)
 {
