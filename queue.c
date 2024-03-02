@@ -303,12 +303,11 @@ int q_ascend(struct list_head *head)
 
     element_t *last_biggest_entry = list_entry(head->next, element_t, list);
     last_biggest = head->next;
-    int size = 1;
 
     list_for_each_safe (li, tmp, head) {
         element_t *entry = list_entry(tmp, element_t, list);
         if (li == head->prev) {
-            return 0;
+            continue;
         }
         if (strcmp(entry->value, last_biggest_entry->value) < 0) {
             while (last_biggest != tmp) {
@@ -321,9 +320,14 @@ int q_ascend(struct list_head *head)
 
                 last_biggest = next;
             }
-            size++;
             last_biggest_entry = list_entry(last_biggest, element_t, list);
         }
+    }
+
+    // calculate size
+    int size = 0;
+    list_for_each_safe (li, tmp, head) {
+        size++;
     }
     return size;
 }
@@ -333,20 +337,32 @@ int q_ascend(struct list_head *head)
 int q_descend(struct list_head *head)
 {
     // https://leetcode.com/problems/remove-nodes-from-linked-list/
-    struct list_head *tmp, *li;
+    struct list_head *last_biggest, *tmp, *li;
     if (!head || list_empty(head))
         return 0;
     if (list_is_singular(head))
         return 1;
 
-    // Delete the less value node
+    element_t *last_biggest_entry = list_entry(head->next, element_t, list);
+    last_biggest = head->next;
+
     list_for_each_safe (li, tmp, head) {
-        element_t *entry = list_entry(li, element_t, list);
-        element_t *next_entry = list_entry(tmp, element_t, list);
-        if (tmp != head && strcmp(entry->value, next_entry->value) < 0) {
-            list_del(li);
-            free(entry->value);
-            free(entry);
+        element_t *entry = list_entry(tmp, element_t, list);
+        if (li == head->prev) {
+            continue;
+        }
+        if (strcmp(entry->value, last_biggest_entry->value) > 0) {
+            while (last_biggest != tmp) {
+                struct list_head *next = last_biggest->next;
+                last_biggest_entry = list_entry(last_biggest, element_t, list);
+
+                list_del(last_biggest);
+                free(last_biggest_entry->value);
+                free(last_biggest_entry);
+
+                last_biggest = next;
+            }
+            last_biggest_entry = list_entry(last_biggest, element_t, list);
         }
     }
 
@@ -355,7 +371,6 @@ int q_descend(struct list_head *head)
     list_for_each_safe (li, tmp, head) {
         size++;
     }
-
     return size;
 }
 
