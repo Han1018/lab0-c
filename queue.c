@@ -358,29 +358,6 @@ int q_descend(struct list_head *head)
 
     return size;
 }
-// int q_descend(struct list_head *head)
-// {
-//     if (!head || list_empty(head)) {
-//         return 0;
-//     }
-
-//     struct list_head *cur, *safe;
-//     char *s = list_entry(head->prev, element_t, list)->value;
-//     for (cur = (head)->prev, safe = cur->prev; cur != (head);
-//          cur = safe, safe = cur->prev) {
-//         element_t *tmp = list_entry(cur, element_t, list);
-//         if (cur != head->prev) {
-//             if (strcmp(s, tmp->value) < 0) {
-//                 s = tmp->value;
-//             } else {
-//                 list_del(&tmp->list);
-//                 q_release_element(tmp);
-//             }
-//         }
-//     }
-//     return q_size(head);
-// }
-
 
 /* Merge all the queues into one sorted queue, which is in
  * ascending/descending order */
