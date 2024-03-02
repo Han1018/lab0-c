@@ -14,8 +14,7 @@
 /* Create an empty queue */
 struct list_head *q_new()
 {
-    struct list_head *head =
-        (struct list_head *) malloc(sizeof(struct list_head));
+    struct list_head *head = malloc(sizeof(struct list_head));
     if (head == NULL)
         return NULL;
     INIT_LIST_HEAD(head);
@@ -26,7 +25,8 @@ struct list_head *q_new()
 void q_free(struct list_head *l)
 {
     struct list_head *list_iter, *_safe;
-
+    if (!l)
+        return;
     list_for_each_safe (list_iter, _safe, l) {
         element_t *entry = list_entry(list_iter, element_t, list);
         list_del(list_iter);
@@ -39,6 +39,8 @@ void q_free(struct list_head *l)
 /* Insert an element at head of queue */
 bool q_insert_head(struct list_head *head, char *s)
 {
+    if (!head)
+        return false;
     element_t *new_node = malloc(sizeof(element_t));
     if (!new_node)
         return false;
@@ -59,6 +61,8 @@ bool q_insert_head(struct list_head *head, char *s)
 /* Insert an element at tail of queue */
 bool q_insert_tail(struct list_head *head, char *s)
 {
+    if (!head)
+        return false;
     element_t *new_node = malloc(sizeof(element_t));
     if (!new_node)
         return false;
@@ -79,7 +83,7 @@ bool q_insert_tail(struct list_head *head, char *s)
 /* Remove an element from head of queue */
 element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
 {
-    if (list_empty(head))
+    if (!head || list_empty(head))
         return NULL;
 
     element_t *entry = list_entry(head->next, element_t, list);
@@ -95,7 +99,7 @@ element_t *q_remove_head(struct list_head *head, char *sp, size_t bufsize)
 /* Remove an element from tail of queue */
 element_t *q_remove_tail(struct list_head *head, char *sp, size_t bufsize)
 {
-    if (list_empty(head))
+    if (!head || list_empty(head))
         return NULL;
 
     element_t *entry = list_entry(head->prev, element_t, list);
@@ -126,7 +130,7 @@ int q_size(struct list_head *head)
 bool q_delete_mid(struct list_head *head)
 {
     // https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/
-    if (list_empty(head))
+    if (!head || list_empty(head))
         return false;
     struct list_head *slow, *fast;
     slow = fast = head;
@@ -197,7 +201,7 @@ void q_swap(struct list_head *head)
 /* Reverse elements in queue */
 void q_reverse(struct list_head *head)
 {
-    if (list_empty(head) || list_is_singular(head))
+    if (!head || list_empty(head) || list_is_singular(head))
         return;
 
     struct list_head *end = head->prev;
@@ -368,6 +372,8 @@ int q_merge(struct list_head *head, bool descend)
 {
     // https://leetcode.com/problems/merge-k-sorted-lists/
     // insert all queue into one queue
+    if (!head || list_empty(head))
+        return 0;
     queue_contex_t *output = list_entry(head->next, queue_contex_t, chain);
     queue_contex_t *current = NULL;
     list_for_each_entry (current, head, chain) {
