@@ -394,5 +394,12 @@ int q_merge(struct list_head *head, bool descend)
 
     // sort
     q_sort(output->q, descend);
-    return 0;
+
+    // calculate size
+    int size = 0;
+    struct list_head *li, *tmp;
+    list_for_each_safe (li, tmp, output->q) {
+        size++;
+    }
+    return size;
 }
