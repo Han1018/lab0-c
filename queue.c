@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "list_sort.h"
 #include "queue.h"
-
 /* Notice: sometimes, Cppcheck would find the potential NULL pointer bugs,
  * but some of them cannot occur. You can suppress them by adding the
  * following line.
@@ -280,6 +280,23 @@ void merge_sort(struct list_head *head)
     merge(&l_head, &r_head, head);
 }
 
+/* Compare two nodes in queue */
+int cmp(const struct list_head *a, const struct list_head *b, bool descend)
+{
+    element_t *a_entry = list_entry(a, element_t, list);
+    element_t *b_entry = list_entry(b, element_t, list);
+
+    if (!descend)
+        return strcmp(a_entry->value, b_entry->value) < 0 ? 0 : 1;
+    else
+        return strcmp(a_entry->value, b_entry->value) > 0 ? 0 : 1;
+}
+
+void q_sort2(struct list_head *head, bool descend)
+{
+    list_sort(head, cmp, descend);
+}
+
 /* Sort elements of queue in ascending/descending order */
 void q_sort(struct list_head *head, bool descend)
 {
@@ -288,6 +305,7 @@ void q_sort(struct list_head *head, bool descend)
     if (descend)
         q_reverse(head);
 }
+
 
 /* Remove every node which has a node with a strictly less value anywhere to
  * the right side of it */
