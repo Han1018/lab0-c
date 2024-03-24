@@ -27,6 +27,7 @@
 #include <ctype.h>
 #include "game.h"
 #include "mcts.h"
+#include "negamax.h"
 
 /* Shannon entropy */
 extern double shannon_entropy(const uint8_t *input_data);
@@ -83,6 +84,7 @@ static int descend = 0;
 
 static int move_record[N_GRIDS];
 static int move_count = 0;
+static int ai_ai_mode = 1;
 
 #define MIN_RANDSTR_LEN 5
 #define MAX_RANDSTR_LEN 10
@@ -1097,6 +1099,10 @@ static bool do_ttt(int argc, char *argv[])
     char turn = 'X';
     char ai = 'O';
 
+    if (ai_ai_mode) {
+        negamax_init();
+    }
+
     while (1) {
         char win = check_win(table);
         if (win == 'D') {
@@ -1113,6 +1119,13 @@ static bool do_ttt(int argc, char *argv[])
             int move = mcts(table, ai);
             if (move != -1) {
                 table[move] = ai;
+                record_move(move);
+            }
+        } else if (ai_ai_mode) {
+            draw_board(table);
+            int move = negamax_predict(table, turn).move;
+            if (move != -1) {
+                table[move] = turn;
                 record_move(move);
             }
         } else {
@@ -1277,6 +1290,7 @@ static void console_init()
                 "[K]");
     ADD_COMMAND(shuffle, "Shuffle the order of nodes in the list", "");
     ADD_COMMAND(ttt, "Tic-Tac-Toe Game", "");
+    add_param("ai_mode", &ai_ai_mode, "Set AI vs AI mode", NULL);
     add_param("length", &string_length, "Maximum length of displayed string",
               NULL);
     add_param("malloc", &fail_probability, "Malloc failure probability percent",
