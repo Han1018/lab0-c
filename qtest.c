@@ -26,7 +26,7 @@
 
 #include <ctype.h>
 #include "game.h"
-#include "negamax.h"
+#include "mcts.h"
 
 /* Shannon entropy */
 extern double shannon_entropy(const uint8_t *input_data);
@@ -1097,8 +1097,6 @@ static bool do_ttt(int argc, char *argv[])
     char turn = 'X';
     char ai = 'O';
 
-    negamax_init();
-
     while (1) {
         char win = check_win(table);
         if (win == 'D') {
@@ -1112,7 +1110,7 @@ static bool do_ttt(int argc, char *argv[])
         }
 
         if (turn == ai) {
-            int move = negamax_predict(table, ai).move;
+            int move = mcts(table, ai);
             if (move != -1) {
                 table[move] = ai;
                 record_move(move);
