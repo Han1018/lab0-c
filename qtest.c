@@ -84,7 +84,7 @@ static int descend = 0;
 
 static int move_record[N_GRIDS];
 static int move_count = 0;
-static int ai_ai_mode = 1;
+static int ai_ai_mode = 0;
 
 #define MIN_RANDSTR_LEN 5
 #define MAX_RANDSTR_LEN 10
