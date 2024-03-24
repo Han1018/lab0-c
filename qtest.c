@@ -16,6 +16,7 @@
 #if defined(__APPLE__)
 #include <mach/mach_time.h>
 #else /* Assume POSIX environments */
+#include <sys/time.h>
 #include <time.h>
 #endif
 
@@ -1091,6 +1092,17 @@ static int get_input(char player)
     return GET_INDEX(y, x);
 }
 
+static void show_time()
+{
+    struct timeval currentTime;
+    gettimeofday(&currentTime, NULL);
+    time_t rawtime;
+    time(&rawtime);
+    struct tm *timeinfo = localtime(&rawtime);
+    printf("Current Time: %02d:%02d:%02d:%02ld\n", timeinfo->tm_hour,
+           timeinfo->tm_min, timeinfo->tm_sec, currentTime.tv_usec / 10000);
+}
+
 static bool do_ttt(int argc, char *argv[])
 {
     srand(time(NULL));
@@ -1108,9 +1120,11 @@ static bool do_ttt(int argc, char *argv[])
         if (win == 'D') {
             draw_board(table);
             printf("It is a draw!\n");
+            show_time();
             break;
         } else if (win != ' ') {
             draw_board(table);
+            show_time();
             printf("%c won!\n", win);
             break;
         }
@@ -1128,8 +1142,10 @@ static bool do_ttt(int argc, char *argv[])
                 table[move] = turn;
                 record_move(move);
             }
+            show_time();
         } else {
             draw_board(table);
+            show_time();
             int move;
             while (1) {
                 move = get_input(turn);
